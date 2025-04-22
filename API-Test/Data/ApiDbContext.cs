@@ -5,7 +5,7 @@ namespace API_Test.Data
 {
     public class ApiDbContext : DbContext
     {
-        public DbSet<People> Peoples { get; set; }
+        public DbSet<People> People { get; set; }
         public DbSet<Interest> Interests { get; set; }
         public DbSet<Link> Links { get; set; }
 
