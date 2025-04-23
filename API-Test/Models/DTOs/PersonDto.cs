@@ -12,6 +12,6 @@ namespace API_Test.Models.DTOs
         [MaxLength(50)]
         public string LastName { get; set; } = string.Empty;
         [Required]
-        public string Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
     }
 }
