@@ -28,6 +28,10 @@ namespace API_Test.Controllers
                     Phone = p.Phone
                 })
                 .ToListAsync();
+            if (people == null)
+            {
+                return NotFound(new { message = "Inga personer finns i databasen" });
+            }
             return Ok(people);
         }
 
@@ -83,7 +87,7 @@ namespace API_Test.Controllers
             return Ok(people);
         }
 
-        [HttpPost("{personId}/Interests/{interestId}")]
+        [HttpPost("{personId}/interests/{interestId}")]
         public async Task<ActionResult> AddInterestToPerson(int personId, int interestId)
         {
             var person = await _context.People.FindAsync(personId);
@@ -100,8 +104,8 @@ namespace API_Test.Controllers
             return Ok(new { message = "Intresset har lagts till personen." });
         }
 
-        [HttpPost("{personId}/InterestId/{interestId}", Name = "AddLinkToInterest")]
-        public async Task<ActionResult> AddLinkToInterest(int personId, int interestId,[FromQuery] string link)
+        [HttpPost("{personId}/interestId/{interestId}/link", Name = "AddLinkToInterest")]
+        public async Task<ActionResult> AddLinkToInterest(int personId, int interestId, [FromQuery] string link)
         {
             var person = await _context.People
                 .Include(p => p.Interests)
@@ -131,15 +135,13 @@ namespace API_Test.Controllers
             {
                 LinkName = validatedUrl.ToString()
             };
-            // DONT FORGET TO ADD THE LINK TO THE INTEREST
-            // interest.Links.Add(newLink);
-            // DONT FORGET TO ADD THE LINK TO THE PERSON
-            // person.Links.Add(newLink);
-            // DONT FORGET TO ADD THE LINK TO THE DB
-            // _context.Links.Add(newLink);
-            // await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Länken har lagts till intresset." });
+            interest.Links.Add(newLink);
+            person.Links.Add(newLink);
+            _context.Links.Add(newLink);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Länken har lagts till för intresset och personen." });
         }
     }
 }
