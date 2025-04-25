@@ -41,7 +41,7 @@ namespace API_Test.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Interests");
+                    b.ToTable("Interests", (string)null);
 
                     b.HasData(
                         new
@@ -79,7 +79,7 @@ namespace API_Test.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Links");
+                    b.ToTable("Links", (string)null);
 
                     b.HasData(
                         new
@@ -143,7 +143,7 @@ namespace API_Test.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("People");
+                    b.ToTable("People", (string)null);
 
                     b.HasData(
                         new
@@ -188,7 +188,7 @@ namespace API_Test.Migrations
 
                     b.HasIndex("LinksId");
 
-                    b.ToTable("InterestLink");
+                    b.ToTable("InterestLink", (string)null);
 
                     b.HasData(
                         new
@@ -240,7 +240,7 @@ namespace API_Test.Migrations
 
                     b.HasIndex("PeopleId");
 
-                    b.ToTable("InterestPeople");
+                    b.ToTable("InterestPeople", (string)null);
 
                     b.HasData(
                         new
@@ -297,7 +297,7 @@ namespace API_Test.Migrations
 
                     b.HasIndex("PeopleId");
 
-                    b.ToTable("LinkPeople");
+                    b.ToTable("LinkPeople", (string)null);
 
                     b.HasData(
                         new
