@@ -28,7 +28,13 @@ curl -X 'GET' \
     "phone": "string"
   }
 ]
-```  
+```
+**Om något gått fel:**
+```
+{
+  message = "Inga personer finns i databasen"
+}
+```
 ### 2. Hämta alla intressen kopplade till en specifik person
 **Endpoint:** `GET /api/people/{id}/interests`  
 **Beskrivning:** Hämtar intressen som är kopplad till en persons Id  
@@ -51,7 +57,13 @@ curl -X 'GET' \
     }
   ]
 }
-```  
+```
+**Om något gått fel:**
+```
+{
+  message = "Personen kunde inte hittas"
+}
+```
 ### 3. Hämta alla länkar kopplade till en specifik person
 **Endpoint:** `GET /api/people/{id}/links`  
 **Beskrivning:** Hämtar länkar som är kopplad till en persons Id  
@@ -73,7 +85,13 @@ curl -X 'GET' \
     }
   ]
 }
-```  
+```
+**Om något gått fel:**
+```
+{
+  message = "Personen kunde inte hittas"
+}
+```
 ### 4. Koppla en person till ett nytt intresse
 **Endpoint:** `POST /api/people/{personId}/Interests/{interestId}`  
 **Beskrivning:** Lägger till ett intresse till en person genom deras båda unika Id.  
@@ -83,8 +101,13 @@ curl -X 'POST' \
   'https://localhost:7119/api/People/1/Interests/3' \
   -H 'accept: */*' \
   -d ''
-```  
-**Exempelsvar:** ``  
+```
+**Om något gått fel:**
+```
+{
+  message = "Person eller intresse hittades inte."
+}
+``` 
 ### 5. Lägga till nya länkar för en specifik person och ett specifikt intresse
 **Endpoint:** `POST /api/people/{personId}/InterestId/{interestId}`  
 **Beskrivning:** Anger unika Id för person och intresse samt en webbplats, genom validering kontrolleras  
@@ -95,4 +118,19 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -d ''
 ```  
-**Exempelsvar:**  
+**Om något gått fel:**
+```
+{
+  message = "Person eller intresse hittades inte." }
+}
+```
+```
+{
+  message = "Person och intresse matchar inte."
+}
+```
+```
+{
+  message = "Ogiltig URL."
+}
+```
