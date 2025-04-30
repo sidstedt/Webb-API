@@ -15,7 +15,6 @@ namespace API_Test.Models.DTOs
         public string Phone { get; set; }
 
         // Navigation properties
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public ICollection<LinkDto> Links { get; set; } = new List<LinkDto>();
     }
 }
