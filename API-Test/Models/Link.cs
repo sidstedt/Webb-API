@@ -8,10 +8,10 @@ namespace API_Test.Models
         [Required]
         [MaxLength(200)]
         public string LinkName { get; set; } = string.Empty;
+        public int PeopleInterestId { get; set; }
 
-        // Navigation properties
-        public ICollection<People> People { get; set; } = new List<People>();
-        public ICollection<Interest> Interests { get; set; } = new List<Interest>();
+        // Navigation Properties
+        public PeopleInterest PeopleInterest { get; set; } = null!;
 
         public Link() { }
 

@@ -16,10 +16,7 @@ namespace API_Test.Models
         public string Phone { get; set; }
 
         // Navigation properties
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public ICollection<Interest> Interests { get; set; } = new List<Interest>();
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public ICollection<Link> Links { get; set; } = new List<Link>();
+        public ICollection<PeopleInterest> PeopleInterests { get; set; } = new List<PeopleInterest>();
 
         public People() { }
 

@@ -3,6 +3,7 @@ using API_Test.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Test.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250430093614_add_PeopleInterest")]
+    partial class add_PeopleInterest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,50 +88,6 @@ namespace API_Test.Migrations
                     b.HasIndex("PeopleInterestId");
 
                     b.ToTable("Links");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            LinkName = "https://github.com",
-                            PeopleInterestId = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            LinkName = "https://stackoverflow.com",
-                            PeopleInterestId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            LinkName = "https://www.gamereactor.com",
-                            PeopleInterestId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            LinkName = "https://www.fz.se",
-                            PeopleInterestId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            LinkName = "https://www.recept.se",
-                            PeopleInterestId = 3
-                        },
-                        new
-                        {
-                            Id = 6,
-                            LinkName = "https://www.koket.se",
-                            PeopleInterestId = 3
-                        },
-                        new
-                        {
-                            Id = 7,
-                            LinkName = "https://www.matklubben.se",
-                            PeopleInterestId = 3
-                        });
                 });
 
             modelBuilder.Entity("API_Test.Models.People", b =>

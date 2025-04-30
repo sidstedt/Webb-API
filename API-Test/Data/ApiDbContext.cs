@@ -8,6 +8,7 @@ namespace API_Test.Data
         public DbSet<People> People { get; set; }
         public DbSet<Interest> Interests { get; set; }
         public DbSet<Link> Links { get; set; }
+        public DbSet<PeopleInterest> PeopleInterests { get; set; }
 
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options) { }
 
@@ -30,70 +31,30 @@ namespace API_Test.Data
                 new Interest(3, "Matlagning", "Allt om matlagning")
             );
 
-            // Seed data for Link
-            modelBuilder.Entity<Link>().HasData(
-                new Link(1, "https://github.com"),
-                new Link(2, "https://stackoverflow.com"),
-                new Link(3, "https://www.gamereactor.com"),
-                new Link(4, "https://www.fz.se"),
-                new Link(5, "https://www.recept.se"),
-                new Link(6, "https://www.koket.se"),
-                new Link(7, "https://www.matklubben.se")
-            );
             // Many-to-many relationships for People and Interest
-            modelBuilder.Entity<People>()
-                .HasMany(p => p.Interests)
-                .WithMany(i => i.People)
-                .UsingEntity(j => j.HasData(
-                    new { PeopleId = 1, InterestsId = 2 },
-                    new { PeopleId = 2, InterestsId = 1 },
-                    new { PeopleId = 2, InterestsId = 3 },
-                    new { PeopleId = 3, InterestsId = 2 },
-                    new { PeopleId = 3, InterestsId = 3 },
-                    new { PeopleId = 4, InterestsId = 1 },
-                    new { PeopleId = 4, InterestsId = 2 },
-                    new { PeopleId = 4, InterestsId = 3 }
-                    ));
-            // Many-to-many relationships for Link and Interest
-            modelBuilder.Entity<Link>()
-                .HasMany(l => l.Interests)
-                .WithMany(i => i.Links)
-                .UsingEntity(j => j.HasData(
-                    new { LinksId = 1, InterestsId = 1 },
-                    new { LinksId = 2, InterestsId = 1 },
-                    new { LinksId = 3, InterestsId = 2 },
-                    new { LinksId = 4, InterestsId = 2 },
-                    new { LinksId = 5, InterestsId = 3 },
-                    new { LinksId = 6, InterestsId = 3 },
-                    new { LinksId = 7, InterestsId = 3 }
-                    ));
+            modelBuilder.Entity<PeopleInterest>()
+                .HasData(
+                    new PeopleInterest { Id = 1, PeopleId = 1, InterestId = 2 },
+                    new PeopleInterest { Id = 2, PeopleId = 2, InterestId = 1 },
+                    new PeopleInterest { Id = 3, PeopleId = 2, InterestId = 3 },
+                    new PeopleInterest { Id = 4, PeopleId = 3, InterestId = 2 },
+                    new PeopleInterest { Id = 5, PeopleId = 3, InterestId = 3 },
+                    new PeopleInterest { Id = 6, PeopleId = 4, InterestId = 1 },
+                    new PeopleInterest { Id = 7, PeopleId = 4, InterestId = 2 },
+                    new PeopleInterest { Id = 8, PeopleId = 4, InterestId = 3 }
+                );
 
-            // Many-to-many relationships for Link and People
+            //// Seed data for Link
             modelBuilder.Entity<Link>()
-                .HasMany(l => l.People)
-                .WithMany(i => i.Links)
-                .UsingEntity(j => j.HasData(
-                    new { LinksId = 1, PeopleId = 2 },
-                    new { LinksId = 1, PeopleId = 4 },
-                    new { LinksId = 2, PeopleId = 2 },
-                    new { LinksId = 2, PeopleId = 4 },
-                    new { LinksId = 3, PeopleId = 1 },
-                    new { LinksId = 3, PeopleId = 3 },
-                    new { LinksId = 3, PeopleId = 4 },
-                    new { LinksId = 4, PeopleId = 1 },
-                    new { LinksId = 4, PeopleId = 3 },
-                    new { LinksId = 4, PeopleId = 4 },
-                    new { LinksId = 5, PeopleId = 2 },
-                    new { LinksId = 5, PeopleId = 3 },
-                    new { LinksId = 5, PeopleId = 4 },
-                    new { LinksId = 6, PeopleId = 2 },
-                    new { LinksId = 6, PeopleId = 3 },
-                    new { LinksId = 6, PeopleId = 4 },
-                    new { LinksId = 7, PeopleId = 2 },
-                    new { LinksId = 7, PeopleId = 3 },
-                    new { LinksId = 7, PeopleId = 4 }
-
-                ));
+                .HasData(
+                    new Link { Id = 1, LinkName = "https://github.com", PeopleInterestId = 2 },
+                    new Link { Id = 2, LinkName = "https://stackoverflow.com", PeopleInterestId = 2 },
+                    new Link { Id = 3, LinkName = "https://www.gamereactor.com", PeopleInterestId = 1 },
+                    new Link { Id = 4, LinkName = "https://www.fz.se", PeopleInterestId = 1 },
+                    new Link { Id = 5, LinkName = "https://www.recept.se", PeopleInterestId = 3 },
+                    new Link { Id = 6, LinkName = "https://www.koket.se", PeopleInterestId = 3 },
+                    new Link { Id = 7, LinkName = "https://www.matklubben.se", PeopleInterestId = 3 }
+                );
         }
     }
 }

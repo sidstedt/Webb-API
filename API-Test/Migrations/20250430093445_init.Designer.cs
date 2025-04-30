@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Test.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20250422115226_init")]
+    [Migration("20250430093445_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -80,46 +80,14 @@ namespace API_Test.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int>("PeopleInterestId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Links");
+                    b.HasIndex("PeopleInterestId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            LinkName = "https://github.com"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            LinkName = "https://stackoverflow.com"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            LinkName = "https://www.gamereactor.com"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            LinkName = "https://www.fz.se"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            LinkName = "https://www.recept.se"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            LinkName = "https://www.koket.se"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            LinkName = "https://www.matklubben.se"
-                        });
+                    b.ToTable("Links");
                 });
 
             modelBuilder.Entity("API_Test.Models.People", b =>
@@ -146,7 +114,7 @@ namespace API_Test.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Peoples");
+                    b.ToTable("People");
 
                     b.HasData(
                         new
@@ -179,94 +147,75 @@ namespace API_Test.Migrations
                         });
                 });
 
-            modelBuilder.Entity("InterestLink", b =>
+            modelBuilder.Entity("API_Test.Models.PeopleInterest", b =>
                 {
-                    b.Property<int>("InterestsId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("LinksId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.HasKey("InterestsId", "LinksId");
-
-                    b.HasIndex("LinksId");
-
-                    b.ToTable("InterestLink");
-                });
-
-            modelBuilder.Entity("InterestPeople", b =>
-                {
-                    b.Property<int>("InterestsId")
+                    b.Property<int>("InterestId")
                         .HasColumnType("int");
 
                     b.Property<int>("PeopleId")
                         .HasColumnType("int");
 
-                    b.HasKey("InterestsId", "PeopleId");
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InterestId");
 
                     b.HasIndex("PeopleId");
 
-                    b.ToTable("InterestPeople");
+                    b.ToTable("PeopleInterests");
                 });
 
-            modelBuilder.Entity("LinkPeople", b =>
+            modelBuilder.Entity("API_Test.Models.Link", b =>
                 {
-                    b.Property<int>("LinksId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PeopleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("LinksId", "PeopleId");
-
-                    b.HasIndex("PeopleId");
-
-                    b.ToTable("LinkPeople");
-                });
-
-            modelBuilder.Entity("InterestLink", b =>
-                {
-                    b.HasOne("API_Test.Models.Interest", null)
-                        .WithMany()
-                        .HasForeignKey("InterestsId")
+                    b.HasOne("API_Test.Models.PeopleInterest", "PeopleInterest")
+                        .WithMany("Links")
+                        .HasForeignKey("PeopleInterestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API_Test.Models.Link", null)
-                        .WithMany()
-                        .HasForeignKey("LinksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("PeopleInterest");
                 });
 
-            modelBuilder.Entity("InterestPeople", b =>
+            modelBuilder.Entity("API_Test.Models.PeopleInterest", b =>
                 {
-                    b.HasOne("API_Test.Models.Interest", null)
-                        .WithMany()
-                        .HasForeignKey("InterestsId")
+                    b.HasOne("API_Test.Models.Interest", "Interest")
+                        .WithMany("PeopleInterests")
+                        .HasForeignKey("InterestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API_Test.Models.People", null)
-                        .WithMany()
+                    b.HasOne("API_Test.Models.People", "People")
+                        .WithMany("PeopleInterests")
                         .HasForeignKey("PeopleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Interest");
+
+                    b.Navigation("People");
                 });
 
-            modelBuilder.Entity("LinkPeople", b =>
+            modelBuilder.Entity("API_Test.Models.Interest", b =>
                 {
-                    b.HasOne("API_Test.Models.Link", null)
-                        .WithMany()
-                        .HasForeignKey("LinksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("PeopleInterests");
+                });
 
-                    b.HasOne("API_Test.Models.People", null)
-                        .WithMany()
-                        .HasForeignKey("PeopleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("API_Test.Models.People", b =>
+                {
+                    b.Navigation("PeopleInterests");
+                });
+
+            modelBuilder.Entity("API_Test.Models.PeopleInterest", b =>
+                {
+                    b.Navigation("Links");
                 });
 #pragma warning restore 612, 618
         }

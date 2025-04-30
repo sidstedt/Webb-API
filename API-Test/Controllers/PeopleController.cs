@@ -46,11 +46,11 @@ namespace API_Test.Controllers
                     FirstName = p.FirstName,
                     LastName = p.LastName,
                     Phone = p.Phone,
-                    Interests = p.Interests
+                    Interests = p.PeopleInterests
                     .Select(i => new InterestDto
                     {
-                        Name = i.Name,
-                        Description = i.Description
+                        Name = i.Interest.Name,
+                        Description = i.Interest.Description
                     })
                     .ToList()
                 })
@@ -72,7 +72,8 @@ namespace API_Test.Controllers
                     FirstName = p.FirstName,
                     LastName = p.LastName,
                     Phone = p.Phone,
-                    Links = p.Links
+                    Links = p.PeopleInterests
+                        .SelectMany(i => i.Links)
                         .Select(l => new LinkDto
                         {
                             LinkName = l.LinkName
@@ -97,8 +98,13 @@ namespace API_Test.Controllers
             {
                 return NotFound(new { message = "Person eller intresse hittades inte." });
             }
+            var peopleInterest = new PeopleInterest
+            {
+                PeopleId = personId,
+                InterestId = interestId
+            };
 
-            person.Interests.Add(interest);
+            person.PeopleInterests.Add(peopleInterest);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Intresset har lagts till personen." });
@@ -107,23 +113,15 @@ namespace API_Test.Controllers
         [HttpPost("{personId}/interestId/{interestId}/link", Name = "AddLinkToInterest")]
         public async Task<ActionResult> AddLinkToInterest(int personId, int interestId, [FromQuery] string link)
         {
-            var person = await _context.People
-                .Include(p => p.Interests)
-                .FirstOrDefaultAsync(p => p.Id == personId);
-
-            var interest = await _context.Interests
-                .Include(i => i.People)
-                .FirstOrDefaultAsync(i => i.Id == interestId);
+            var peopleInterest = await _context.PeopleInterests
+                .Include(pi => pi.People)
+                .Include(pi => pi.Interest)
+                .FirstOrDefaultAsync(pi => pi.PeopleId == personId && pi.InterestId == interestId);
 
             // Check if the person and interest exist
-            if (person == null || interest == null)
+            if (peopleInterest == null)
             {
                 return NotFound(new { message = "Person eller intresse hittades inte." });
-            }
-            // Check if the person has the interest
-            if (!person.Interests.Any(i => i.Id == interest.Id))
-            {
-                return BadRequest(new { message = "Person och intresse matchar inte." });
             }
             // Check if the link is valid
             if (!Uri.TryCreate(link, UriKind.Absolute, out Uri? validatedUrl))
@@ -133,11 +131,10 @@ namespace API_Test.Controllers
 
             var newLink = new Link
             {
-                LinkName = validatedUrl.ToString()
+                LinkName = validatedUrl.ToString(),
+                PeopleInterestId = peopleInterest.Id
             };
 
-            interest.Links.Add(newLink);
-            person.Links.Add(newLink);
             _context.Links.Add(newLink);
             await _context.SaveChangesAsync();
 

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Test.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20250422131247_NameChange")]
-    partial class NameChange
+    [Migration("20250430093659_Add_LinkTable")]
+    partial class Add_LinkTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,7 +80,12 @@ namespace API_Test.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int>("PeopleInterestId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PeopleInterestId");
 
                     b.ToTable("Links");
 
@@ -88,37 +93,44 @@ namespace API_Test.Migrations
                         new
                         {
                             Id = 1,
-                            LinkName = "https://github.com"
+                            LinkName = "https://github.com",
+                            PeopleInterestId = 2
                         },
                         new
                         {
                             Id = 2,
-                            LinkName = "https://stackoverflow.com"
+                            LinkName = "https://stackoverflow.com",
+                            PeopleInterestId = 2
                         },
                         new
                         {
                             Id = 3,
-                            LinkName = "https://www.gamereactor.com"
+                            LinkName = "https://www.gamereactor.com",
+                            PeopleInterestId = 1
                         },
                         new
                         {
                             Id = 4,
-                            LinkName = "https://www.fz.se"
+                            LinkName = "https://www.fz.se",
+                            PeopleInterestId = 1
                         },
                         new
                         {
                             Id = 5,
-                            LinkName = "https://www.recept.se"
+                            LinkName = "https://www.recept.se",
+                            PeopleInterestId = 3
                         },
                         new
                         {
                             Id = 6,
-                            LinkName = "https://www.koket.se"
+                            LinkName = "https://www.koket.se",
+                            PeopleInterestId = 3
                         },
                         new
                         {
                             Id = 7,
-                            LinkName = "https://www.matklubben.se"
+                            LinkName = "https://www.matklubben.se",
+                            PeopleInterestId = 3
                         });
                 });
 
@@ -179,270 +191,122 @@ namespace API_Test.Migrations
                         });
                 });
 
-            modelBuilder.Entity("InterestLink", b =>
+            modelBuilder.Entity("API_Test.Models.PeopleInterest", b =>
                 {
-                    b.Property<int>("InterestsId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("LinksId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.HasKey("InterestsId", "LinksId");
-
-                    b.HasIndex("LinksId");
-
-                    b.ToTable("InterestLink");
-
-                    b.HasData(
-                        new
-                        {
-                            InterestsId = 1,
-                            LinksId = 1
-                        },
-                        new
-                        {
-                            InterestsId = 1,
-                            LinksId = 2
-                        },
-                        new
-                        {
-                            InterestsId = 2,
-                            LinksId = 3
-                        },
-                        new
-                        {
-                            InterestsId = 2,
-                            LinksId = 4
-                        },
-                        new
-                        {
-                            InterestsId = 3,
-                            LinksId = 5
-                        },
-                        new
-                        {
-                            InterestsId = 3,
-                            LinksId = 6
-                        },
-                        new
-                        {
-                            InterestsId = 3,
-                            LinksId = 7
-                        });
-                });
-
-            modelBuilder.Entity("InterestPeople", b =>
-                {
-                    b.Property<int>("InterestsId")
+                    b.Property<int>("InterestId")
                         .HasColumnType("int");
 
                     b.Property<int>("PeopleId")
                         .HasColumnType("int");
 
-                    b.HasKey("InterestsId", "PeopleId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("InterestId");
 
                     b.HasIndex("PeopleId");
 
-                    b.ToTable("InterestPeople");
+                    b.ToTable("PeopleInterests");
 
                     b.HasData(
                         new
                         {
-                            InterestsId = 2,
+                            Id = 1,
+                            InterestId = 2,
                             PeopleId = 1
                         },
                         new
                         {
-                            InterestsId = 1,
+                            Id = 2,
+                            InterestId = 1,
                             PeopleId = 2
                         },
                         new
                         {
-                            InterestsId = 3,
+                            Id = 3,
+                            InterestId = 3,
                             PeopleId = 2
                         },
                         new
                         {
-                            InterestsId = 2,
+                            Id = 4,
+                            InterestId = 2,
                             PeopleId = 3
                         },
                         new
                         {
-                            InterestsId = 3,
+                            Id = 5,
+                            InterestId = 3,
                             PeopleId = 3
                         },
                         new
                         {
-                            InterestsId = 1,
+                            Id = 6,
+                            InterestId = 1,
                             PeopleId = 4
                         },
                         new
                         {
-                            InterestsId = 2,
+                            Id = 7,
+                            InterestId = 2,
                             PeopleId = 4
                         },
                         new
                         {
-                            InterestsId = 3,
+                            Id = 8,
+                            InterestId = 3,
                             PeopleId = 4
                         });
                 });
 
-            modelBuilder.Entity("LinkPeople", b =>
+            modelBuilder.Entity("API_Test.Models.Link", b =>
                 {
-                    b.Property<int>("LinksId")
-                        .HasColumnType("int");
+                    b.HasOne("API_Test.Models.PeopleInterest", "PeopleInterest")
+                        .WithMany("Links")
+                        .HasForeignKey("PeopleInterestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("PeopleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("LinksId", "PeopleId");
-
-                    b.HasIndex("PeopleId");
-
-                    b.ToTable("LinkPeople");
-
-                    b.HasData(
-                        new
-                        {
-                            LinksId = 1,
-                            PeopleId = 2
-                        },
-                        new
-                        {
-                            LinksId = 1,
-                            PeopleId = 4
-                        },
-                        new
-                        {
-                            LinksId = 2,
-                            PeopleId = 2
-                        },
-                        new
-                        {
-                            LinksId = 2,
-                            PeopleId = 4
-                        },
-                        new
-                        {
-                            LinksId = 3,
-                            PeopleId = 1
-                        },
-                        new
-                        {
-                            LinksId = 3,
-                            PeopleId = 3
-                        },
-                        new
-                        {
-                            LinksId = 3,
-                            PeopleId = 4
-                        },
-                        new
-                        {
-                            LinksId = 4,
-                            PeopleId = 1
-                        },
-                        new
-                        {
-                            LinksId = 4,
-                            PeopleId = 3
-                        },
-                        new
-                        {
-                            LinksId = 4,
-                            PeopleId = 4
-                        },
-                        new
-                        {
-                            LinksId = 5,
-                            PeopleId = 2
-                        },
-                        new
-                        {
-                            LinksId = 5,
-                            PeopleId = 3
-                        },
-                        new
-                        {
-                            LinksId = 5,
-                            PeopleId = 4
-                        },
-                        new
-                        {
-                            LinksId = 6,
-                            PeopleId = 2
-                        },
-                        new
-                        {
-                            LinksId = 6,
-                            PeopleId = 3
-                        },
-                        new
-                        {
-                            LinksId = 6,
-                            PeopleId = 4
-                        },
-                        new
-                        {
-                            LinksId = 7,
-                            PeopleId = 2
-                        },
-                        new
-                        {
-                            LinksId = 7,
-                            PeopleId = 3
-                        },
-                        new
-                        {
-                            LinksId = 7,
-                            PeopleId = 4
-                        });
+                    b.Navigation("PeopleInterest");
                 });
 
-            modelBuilder.Entity("InterestLink", b =>
+            modelBuilder.Entity("API_Test.Models.PeopleInterest", b =>
                 {
-                    b.HasOne("API_Test.Models.Interest", null)
-                        .WithMany()
-                        .HasForeignKey("InterestsId")
+                    b.HasOne("API_Test.Models.Interest", "Interest")
+                        .WithMany("PeopleInterests")
+                        .HasForeignKey("InterestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API_Test.Models.Link", null)
-                        .WithMany()
-                        .HasForeignKey("LinksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("InterestPeople", b =>
-                {
-                    b.HasOne("API_Test.Models.Interest", null)
-                        .WithMany()
-                        .HasForeignKey("InterestsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API_Test.Models.People", null)
-                        .WithMany()
+                    b.HasOne("API_Test.Models.People", "People")
+                        .WithMany("PeopleInterests")
                         .HasForeignKey("PeopleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Interest");
+
+                    b.Navigation("People");
                 });
 
-            modelBuilder.Entity("LinkPeople", b =>
+            modelBuilder.Entity("API_Test.Models.Interest", b =>
                 {
-                    b.HasOne("API_Test.Models.Link", null)
-                        .WithMany()
-                        .HasForeignKey("LinksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("PeopleInterests");
+                });
 
-                    b.HasOne("API_Test.Models.People", null)
-                        .WithMany()
-                        .HasForeignKey("PeopleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("API_Test.Models.People", b =>
+                {
+                    b.Navigation("PeopleInterests");
+                });
+
+            modelBuilder.Entity("API_Test.Models.PeopleInterest", b =>
+                {
+                    b.Navigation("Links");
                 });
 #pragma warning restore 612, 618
         }

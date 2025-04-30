@@ -13,8 +13,7 @@ namespace API_Test.Models
         public string Description { get; set; } = string.Empty;
 
         // Navigation properties
-        public ICollection<People> People { get; set; } = new List<People>();
-        public ICollection<Link> Links { get; set; } = new List<Link>();
+        public ICollection<PeopleInterest> PeopleInterests { get; set; } = new List<PeopleInterest>();
 
         public Interest() { }
 
