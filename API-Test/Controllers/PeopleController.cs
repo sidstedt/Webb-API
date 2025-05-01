@@ -88,23 +88,60 @@ namespace API_Test.Controllers
             return Ok(people);
         }
 
-        [HttpPost("{personId}/interests/{interestId}")]
-        public async Task<ActionResult> AddInterestToPerson(int personId, int interestId)
+        [HttpPost("{personId}/interests")]
+        public async Task<ActionResult> AddInterestToPerson(int personId, int? interestId, [FromBody] AddInterestDto addInterestDto)
         {
             var person = await _context.People.FindAsync(personId);
-            var interest = await _context.Interests.FindAsync(interestId);
 
-            if (person == null || interest == null)
+            if (person == null)
             {
                 return NotFound(new { message = "Person eller intresse hittades inte." });
             }
+            Interest interest;
+            if (interestId.HasValue)
+            {
+                interest = await _context.Interests.FindAsync(interestId);
+                if (interest == null)
+                {
+                    return NotFound(new { message = "Intresse hittades inte." });
+                }
+            }
+            else
+            {
+                if (addInterestDto == null || string.IsNullOrWhiteSpace(addInterestDto.Name) || string.IsNullOrWhiteSpace(addInterestDto.Description))
+                {
+                    return BadRequest(new { message = "Ogilig intressedata." });
+                }
+
+                interest = await _context.Interests.FirstOrDefaultAsync(i => i.Name == addInterestDto.Name);
+
+                if (interest == null)
+                {
+                    interest = new Interest
+                    {
+                        Name = addInterestDto.Name,
+                        Description = addInterestDto.Description
+                    };
+
+                    _context.Interests.Add(interest);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            var existingPeopleInterest = await _context.PeopleInterests
+                .FirstOrDefaultAsync(pi => pi.PeopleId == personId && pi.InterestId == interest.Id);
+            if (existingPeopleInterest != null)
+            {
+                return BadRequest(new { message = "Personen har redan detta intresse." });
+            }
+
             var peopleInterest = new PeopleInterest
             {
                 PeopleId = personId,
-                InterestId = interestId
+                InterestId = interest.Id
             };
 
-            person.PeopleInterests.Add(peopleInterest);
+            _context.PeopleInterests.Add(peopleInterest);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Intresset har lagts till personen." });
