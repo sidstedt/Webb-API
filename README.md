@@ -8,8 +8,11 @@
 - [x]  Lägga till nya länkar för en specifik person och ett specifikt intresse
 
 ## Dokumentering över varje funktion
-
-### 1. Hämta alla personer
+<details close>
+<summary>
+  1. Hämta alla personer
+</summary>
+<br>
 
 **Endpoint:** `GET /api/people`  
 
@@ -39,7 +42,11 @@ curl -X 'GET' \
   message = "Inga personer finns i databasen"
 }
 ```
-### 2. Hämta alla intressen kopplade till en specifik person
+</details>
+<details close>
+  <summary>
+    2. Hämta alla intressen kopplade till en specifik person
+  </summary>
 
 **Endpoint:** `GET /api/People/{id}/interests`  
 
@@ -76,8 +83,11 @@ curl -X 'GET' \
   message = "Personen kunde inte hittas"
 }
 ```
-
-### 3. Hämta alla länkar kopplade till en specifik person
+</details>
+<details close>
+  <summary>
+    3. Hämta alla länkar kopplade till en specifik person
+  </summary>
 
 **Endpoint:** `GET /api/People/{id}/links`  
 
@@ -111,8 +121,12 @@ curl -X 'GET' \
   message = "Personen kunde inte hittas"
 }
 ```
-
-### 4. Koppla en person till ett nytt intresse
+</details>
+<details close>
+  <summary>
+    4. Koppla en person till ett nytt intresse
+  </summary>
+  
 **Endpoint:** `POST /api/People/{personId}/interests/{interestId}`  
 
 **Beskrivning:** Lägger till ett intresse till en person genom deras båda unika Id.  
@@ -138,8 +152,12 @@ curl -X 'POST' \
   message = "Person eller intresse hittades inte."
 }
 ```
-
-### 5. Lägga till nya länkar för en specifik person och ett specifikt intresse
+</details>
+<details close>
+  <summary>
+    5. Lägga till nya länkar för en specifik person och ett specifikt intresse
+  </summary>
+  
 **Endpoint:** `POST /api/People/{personId}/interestId/{interestId}`  
 
 **Beskrivning:** Anger unika Id för person och intresse samt en webbplats, genom validering kontrolleras  
@@ -175,3 +193,4 @@ curl -X 'POST' \
   message = "Ogiltig URL."
 }
 ```
+</details>
